@@ -19,9 +19,123 @@ paths:
         '200':
           description: Array of listings
           content:
-            application/json:    
+            application/json:
               schema:
                 $ref: "#/components/schemas/ResponseListings"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      summary: adds a new Listing
+      operationId: post
+      tags:
+      - listings
+      requestBody:
+        description: the listing to create
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResponseListings'
+      responses:
+        '201':
+          description: the created listing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseListings"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /listings/{listingId}:
+    get:
+      summary: gets a listing by id
+      operationId: getById
+      tags:
+      - listings
+      parameters:
+      - name: listingId
+        in: path
+        description: the listing by id
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: the Listing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseListings"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      summary: updates a listing
+      operationId: put
+      tags:
+      - listings
+      parameters:
+      - name: listingId
+        in: path
+        description: the listing id
+        required: true
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: the listing to be updated
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Listing'
+      responses:
+        '200':
+          description: the replaced user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseListings"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      summary: deletes a listing
+      operationId: deleteListing
+      tags:
+        - listings
+      parameters:
+      - name: listingId
+        in: path
+        description: listing id
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: the deleted user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseListings"
+        '204':
+          description: No change (nothing was deleted)
         default:
           description: unexpected error
           content:
@@ -33,7 +147,29 @@ components:
     Listing:
       type: object
       properties:
-# Add properties for your listings here   
+        typeSummary:
+          type: string
+        price:
+          type: integer
+        monthlyFee:
+          type: integer
+        bidding:
+          type: boolean
+        address:
+          properties:
+            streetName:
+              type: string
+            streetNumber:
+              type: string
+            city:
+              type: string
+            coordinate:
+              properties:
+                lat:
+                  type: integer
+                lng:
+                  type: integer
+
     ResponseListing:
       allOf:
       - $ref: "#/components/schemas/Listing"
@@ -56,7 +192,7 @@ components:
           type: object
           properties:
             expose:
-              type: bool
+              type: boolean
             statusCode:
               type: integer
               format: uint32
